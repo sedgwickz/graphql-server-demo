@@ -5,9 +5,10 @@
   "name": "hello-express",
   "version": "0.0.1",
   "description": "A simple Node app built on Express, instantly up and running.",
-  "main": "server.ts",
+  "main": "server.js",
   "scripts": {
-    "start": "ts-node-dev server.ts",
+    "start": "node server.js",
+    "dev": "ts-node-dev server.ts",
     "tsc": "tsc"
   },
   "dependencies": {

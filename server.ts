@@ -66,16 +66,11 @@ type Result {
   }
 `)
 
-interface InputParams {
-  first: number
-  after: string
-}
-
 const root = {
   hello: () => {
     return 'Hello world1111222!'
   },
-  items: ({ first, after }: InputParams) => {
+  items: ({ first, after }: { first: number; after: string }) => {
     const res = {
       pageInfo: {
         endCursor: '111',
