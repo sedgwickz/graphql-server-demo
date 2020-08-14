@@ -19,6 +19,7 @@ var fs_1 = __importDefault(require("fs"));
 var express_1 = __importDefault(require("express"));
 var express_graphql_1 = require("express-graphql");
 var graphql_1 = require("graphql");
+var cors_1 = __importDefault(require("cors"));
 var app = express_1.default();
 var posts = JSON.parse(fs_1.default.readFileSync('./data.json', 'utf-8'));
 var schema = graphql_1.buildSchema("\n\ntype PageInfo {\n  endCursor: String\n  hasNext: Boolean\n}\n\ntype Post {\n  id: String\n  quote: String\n  author: String\n}\n\ntype Node {\n  node: Post\n}\n\ntype Result {\n  pageInfo: PageInfo\n  edges: [Node]\n  totalCount: Int\n  nodes: [Post]\n}\n  type Query {\n    hello: String\n    items(first: Int = 10, after: String): Result\n  }\n");
@@ -48,6 +49,7 @@ var root = {
         return res;
     },
 };
+app.use(cors_1.default());
 app.use('/graphql', express_graphql_1.graphqlHTTP({
     schema: schema,
     rootValue: root,

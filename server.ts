@@ -2,6 +2,7 @@ import fs from 'fs'
 import express from 'express'
 import { graphqlHTTP } from 'express-graphql'
 import { buildSchema } from 'graphql'
+import cors from 'cors'
 const app = express()
 
 const posts: [Post] = JSON.parse(fs.readFileSync('./data.json', 'utf-8'))
@@ -87,6 +88,7 @@ const root = {
   },
 }
 
+app.use(cors())
 app.use(
   '/graphql',
   graphqlHTTP({
