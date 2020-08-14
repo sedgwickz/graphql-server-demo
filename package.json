@@ -5,15 +5,16 @@
   "name": "hello-express",
   "version": "0.0.1",
   "description": "A simple Node app built on Express, instantly up and running.",
-  "main": "server.js",
+  "main": "server.ts",
   "scripts": {
     "start": "ts-node-dev server.ts",
     "tsc": "tsc"
   },
   "dependencies": {
     "express": "^4.17.1",
+    "graphql": "^15.3.0",
     "express-graphql": "^0.11.0",
-    "graphql": "^15.3.0"
+    "@types/express": "^4.17.7"
   },
   "engines": {
     "node": "12.x"
