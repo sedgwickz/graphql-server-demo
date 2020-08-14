@@ -1,32 +1,19 @@
-// server.js
-// where your node app starts
-
-// we've started you off with Express (https://expressjs.com/)
-// but feel free to use whatever libraries or frameworks you'd like through `package.json`.
+import fs from 'fs'
 import express from 'express'
 import { graphqlHTTP } from 'express-graphql'
 import { buildSchema } from 'graphql'
 const app = express()
 
-const posts = [
-  {
-    id: 1,
-    title: 'hello',
-  },
-  {
-    id: 2,
-    title: 'qweqwe',
-  },
-]
+const posts: [Post] = JSON.parse(fs.readFileSync('./data.json', 'utf-8'))
 
 interface PageInfo {
-  endCursor: String
+  endCursor: string
   hasNext: Boolean
 }
 
 interface Post {
-  id: number
-  title: String
+  quote: string
+  author: string
 }
 
 interface Node {
@@ -47,8 +34,9 @@ type PageInfo {
 }
 
 type Post {
-  id: Int
-  title: String
+  id: String
+  quote: String
+  author: String
 }
 
 type Node {
@@ -59,6 +47,7 @@ type Result {
   pageInfo: PageInfo
   edges: [Node]
   totalCount: Int
+  nodes: [Post]
 }
   type Query {
     hello: String
@@ -71,21 +60,29 @@ const root = {
     return 'Hello world1111222!'
   },
   items: ({ first, after }: { first: number; after: string }) => {
+    const startIndex = after
+      ? Number(Buffer.from(after, 'base64').toString().split(':').pop()) + 1
+      : 0
+    const selectPosts = posts.slice(startIndex, startIndex + first)
+    const endCursor = Buffer.from(
+      `cursor:${startIndex * first + selectPosts.length - 1}`,
+    ).toString('base64')
     const res = {
-      pageInfo: {
-        endCursor: '111',
-        hasNext: true,
-      },
-      edges: [
-        {
+      totalCount: posts.length,
+      pageInfo: { endCursor: endCursor, hasNext: selectPosts.length === first },
+      edges: selectPosts.map((p: Post, index: number) => {
+        return {
           node: {
-            id: 1,
-            title: 'hello',
+            id: Buffer.from(`cursor:${index}`).toString('base64'),
+            ...p,
           },
-        },
-      ],
-      totalCount: 111,
+        }
+      }),
+      nodes: selectPosts.map((p: Post, index: number) => {
+        return { ...p, id: Buffer.from(`cursor:${index}`).toString('base64') }
+      }),
     }
+
     return res
   },
 }
