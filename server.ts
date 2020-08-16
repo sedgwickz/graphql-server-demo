@@ -74,13 +74,20 @@ const root = {
       edges: selectPosts.map((p: Post, index: number) => {
         return {
           node: {
-            id: Buffer.from(`cursor:${index}`).toString('base64'),
+            id: Buffer.from(`cursor:${startIndex * first + index}`).toString(
+              'base64',
+            ),
             ...p,
           },
         }
       }),
       nodes: selectPosts.map((p: Post, index: number) => {
-        return { ...p, id: Buffer.from(`cursor:${index}`).toString('base64') }
+        return {
+          ...p,
+          id: Buffer.from(`cursor:${startIndex * first + index}`).toString(
+            'base64',
+          ),
+        }
       }),
     }
 
